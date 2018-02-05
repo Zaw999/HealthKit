@@ -12,6 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *lblDateOfBirth;
 @property (weak, nonatomic) IBOutlet UITextField *txtBodyWeight;
+@property (weak, nonatomic) IBOutlet UITextField *txtBodyHeight;
 
 @end
 

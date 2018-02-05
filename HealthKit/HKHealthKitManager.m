@@ -33,22 +33,18 @@
         // If our device doesn't support HealthKit -> return.
         return;
     }
-    /*
-     NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierBodyMass]];
-     [self.healthStore requestAuthorizationToShareTypes:nil
-     readTypes:[NSSet setWithArray:readTypes] completion:nil];
-     */
+    NSSet *shareObjectTypes = [NSSet setWithObjects:
+                               [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass],
+                               [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight],
+                               [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMassIndex],
+                               nil];
     
     NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth]];
     
-    NSArray *writeTypes = @[[HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass]];
+    // NSArray *writeTypes = @[[HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass]];
     
-    /*
-    [self.healthStore requestAuthorizationToShareTypes:[NSSet setWithArray:readTypes]
-                                             readTypes:[NSSet setWithArray:writeTypes] completion:nil];
-     */
-    [self.healthStore requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes]
-                                             readTypes:[NSSet setWithArray:readTypes] completion:nil];
+    [self.healthStore requestAuthorizationToShareTypes: shareObjectTypes
+                                             readTypes: [NSSet setWithArray:readTypes] completion:nil];
 }
 
 - (NSDateComponents *)readBirthDate {
@@ -62,7 +58,8 @@
     return dateOfBirth;
 }
 
-- (void)writeWeightSample:(float)weight {
+- (void)saveHKSample:(float)weight
+             heightSample:(float)height {
     
     // Each quantity consists of a value and a unit.
     HKUnit *kilogramUnit = [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixKilo];
@@ -74,13 +71,29 @@
     // For every sample, we need a sample type, quantity and a date.
     HKQuantitySample *weightSample = [HKQuantitySample quantitySampleWithType:weightType quantity:weightQuantity startDate:now endDate:now];
     
+    double meterValue = height / 100;
+    HKQuantity *heightQuantity = [HKQuantity quantityWithUnit:[HKUnit meterUnit] doubleValue: meterValue];
+    
+    HKQuantityType *heightType = [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierHeight];
+    
+    HKQuantitySample *heightSample = [HKQuantitySample quantitySampleWithType: heightType quantity: heightQuantity startDate:now endDate:now];
+    
+    
+    [self.healthStore saveObjects: @[weightSample,heightSample] withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"Error while saving weight (%f) to Health Store: %@.", weight, error);
+        }
+    }];
+    
+    /*
     [self.healthStore saveObject: weightSample withCompletion:^(BOOL success, NSError *error) {
         if (!success) {
             NSLog(@"Error while saving weight (%f) to Health Store: %@.", weight, error);
         }
     }];
+     */
+    
 }
-
 
 @end
 

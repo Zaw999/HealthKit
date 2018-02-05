@@ -15,6 +15,7 @@
 - (void)requestAuthorization;
 
 - (NSDate *)readBirthDate;
-- (void)writeWeightSample:(float)weight;
+- (void)saveHKSample:(float)weight
+             heightSample:(float)height;
 
 @end

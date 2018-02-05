@@ -46,7 +46,7 @@
 }
 - (IBAction)writeBodyWeight:(id)sender {
     
-    [[HKHealthKitManager sharedManager] writeWeightSample: _txtBodyWeight.text.floatValue];
+    [[HKHealthKitManager sharedManager] saveHKSample: _txtBodyWeight.text.floatValue heightSample: _txtBodyHeight.text.floatValue];
     
 }
 
