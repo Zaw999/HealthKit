@@ -33,18 +33,27 @@
         // If our device doesn't support HealthKit -> return.
         return;
     }
+    /*
+     NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierBodyMass]];
+     [self.healthStore requestAuthorizationToShareTypes:nil
+     readTypes:[NSSet setWithArray:readTypes] completion:nil];
+     */
     
-    NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth]];
+    NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth]];
     
     NSArray *writeTypes = @[[HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass]];
     
+    /*
     [self.healthStore requestAuthorizationToShareTypes:[NSSet setWithArray:readTypes]
                                              readTypes:[NSSet setWithArray:writeTypes] completion:nil];
+     */
+    [self.healthStore requestAuthorizationToShareTypes:[NSSet setWithArray:writeTypes]
+                                             readTypes:[NSSet setWithArray:readTypes] completion:nil];
 }
 
-- (NSDate *)readBirthDate {
+- (NSDateComponents *)readBirthDate {
     NSError *error;
-    NSDate *dateOfBirth = [self.healthStore dateOfBirthComponentsWithError:&error];   // Convenience method of HKHealthStore to get date of birth directly.
+    NSDateComponents *dateOfBirth = [self.healthStore dateOfBirthComponentsWithError: &error];   // Convenience method of HKHealthStore to get date of birth directly.
     
     if (!dateOfBirth) {
         NSLog(@"Either an error occured fetching the user's age information or none has been stored yet. In your app, try to handle this gracefully.");
@@ -65,7 +74,7 @@
     // For every sample, we need a sample type, quantity and a date.
     HKQuantitySample *weightSample = [HKQuantitySample quantitySampleWithType:weightType quantity:weightQuantity startDate:now endDate:now];
     
-    [self.healthStore saveObject:weightSample withCompletion:^(BOOL success, NSError *error) {
+    [self.healthStore saveObject: weightSample withCompletion:^(BOOL success, NSError *error) {
         if (!success) {
             NSLog(@"Error while saving weight (%f) to Health Store: %@.", weight, error);
         }
