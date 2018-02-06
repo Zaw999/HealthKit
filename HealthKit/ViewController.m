@@ -46,7 +46,28 @@
 }
 - (IBAction)writeBodyWeight:(id)sender {
     
-    [[HKHealthKitManager sharedManager] saveHKSample: _txtBodyWeight.text.floatValue heightSample: _txtBodyHeight.text.floatValue];
+    [self.view endEditing: YES];
+    
+//    [[HKHealthKitManager sharedManager] saveHKSample: _txtBodyWeight.text.floatValue heightSample: _txtBodyHeight.text.floatValue];
+    
+    [[HKHealthKitManager sharedManager] saveHKSample: _txtBodyWeight.text.floatValue heightSample: _txtBodyHeight.text.floatValue withCompletion: ^(BOOL result){
+        if (result) {
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:NULL
+                                                                           message:@"Saved to HealthKit"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        
+    }];
+
+    
+    
     
 }
 

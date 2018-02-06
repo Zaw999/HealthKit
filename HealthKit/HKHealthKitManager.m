@@ -58,8 +58,8 @@
     return dateOfBirth;
 }
 
-- (void)saveHKSample:(float)weight
-             heightSample:(float)height {
+-(void)saveHKSample:(float)weight
+             heightSample:(float)height withCompletion: (void (^)(BOOL result))completionHandler{
     
     // Each quantity consists of a value and a unit.
     HKUnit *kilogramUnit = [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixKilo];
@@ -78,20 +78,18 @@
     
     HKQuantitySample *heightSample = [HKQuantitySample quantitySampleWithType: heightType quantity: heightQuantity startDate:now endDate:now];
     
-    
     [self.healthStore saveObjects: @[weightSample,heightSample] withCompletion:^(BOOL success, NSError *error) {
+        NSLog(@"result : %d", success);
+        completionHandler(success);
+        /*
         if (!success) {
             NSLog(@"Error while saving weight (%f) to Health Store: %@.", weight, error);
-        }
+            completionHandler(success);
+         }
+         */
     }];
     
-    /*
-    [self.healthStore saveObject: weightSample withCompletion:^(BOOL success, NSError *error) {
-        if (!success) {
-            NSLog(@"Error while saving weight (%f) to Health Store: %@.", weight, error);
-        }
-    }];
-     */
+    
     
 }
 
