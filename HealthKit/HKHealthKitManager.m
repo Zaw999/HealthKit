@@ -27,24 +27,50 @@
     return instance;
 }
 
+// Returns the types of data that Fit wishes to read from HealthKit.
+- (NSSet *)dataTypesToRead {
+    
+    HKQuantityType *dobType = [HKObjectType quantityTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth];
+    
+    HKQuantityType *caffeineType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine];
+    HKQuantityType *calciumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCalcium];
+    HKQuantityType *carboHydratesType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCarbohydrates];
+    HKQuantityType *chlorideType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChloride];
+    HKQuantityType *chromiumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChromium];
+    
+    return [NSSet setWithObjects: dobType, caffeineType, calciumType, carboHydratesType, chlorideType, chromiumType, nil];
+}
+
+- (NSSet *)dataTypesToWrite {
+    
+    HKQuantityType *dobType = [HKObjectType quantityTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth];
+    
+    HKQuantityType *caffeineType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine];
+    HKQuantityType *calciumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCalcium];
+    HKQuantityType *carboHydratesType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCarbohydrates];
+    HKQuantityType *chlorideType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChloride];
+    HKQuantityType *chromiumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChromium];
+    
+    return [NSSet setWithObjects: caffeineType, calciumType, carboHydratesType, chlorideType, chromiumType, nil];
+}
+
 - (void)requestAuthorization {
     
-    if ([HKHealthStore isHealthDataAvailable] == NO) {
-        // If our device doesn't support HealthKit -> return.
-        return;
-    }
-    NSSet *shareObjectTypes = [NSSet setWithObjects:
-                               [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass],
-                               [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight],
-                               [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMassIndex],
-                               nil];
+//    if ([HKHealthStore isHealthDataAvailable] == NO) {
+//        // If our device doesn't support HealthKit -> return.
+//        // return;
+//    }
     
-    NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth]];
+    [self.healthStore requestAuthorizationToShareTypes: [self dataTypesToWrite]
+                                             readTypes: [self dataTypesToRead]
+                                            completion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"You didn't allow HealthKit to access these read/write data types. In your app, try to handle this error gracefully when a user decides not to provide access. The error was: %@. If you're using a simulator, try it on a device.", error);
+            
+            return;
+        }
+    }];
     
-    // NSArray *writeTypes = @[[HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass]];
-    
-    [self.healthStore requestAuthorizationToShareTypes: shareObjectTypes
-                                             readTypes: [NSSet setWithArray:readTypes] completion:nil];
 }
 
 - (NSDateComponents *)readBirthDate {
@@ -55,8 +81,67 @@
         NSLog(@"Either an error occured fetching the user's age information or none has been stored yet. In your app, try to handle this gracefully.");
     }
     
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Update the user interface based on the current user's health information.
+        // [self updateCaffeineType];
+    });
+    
+    
     return dateOfBirth;
 }
+
+- (void)updateCaffeineType {
+    
+    HKQuantityType *caffeineType = [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine];
+    /*
+    [self mostRecentQuantitySampleOfType: caffeineType
+                               predicate: nil
+                              completion: ^(HKQuantity *mostRecentQuantity, NSError *error) {
+                                  
+                                  if (!mostRecentQuantity) {
+                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                          
+                                      });
+                                  }
+                              }];
+    
+    */
+    
+}
+
+- (void)mostRecentQuantitySampleOfType:(HKQuantityType *)quantityType
+                             predicate:(NSPredicate *)predicate
+                            completion:(void (^)(HKQuantity *, NSError *))completion {
+    
+    NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate ascending:NO];
+    
+    // Since we are interested in retrieving the user's latest sample, we sort the samples in descending order, and set the limit to 1. We are not filtering the data, and so the predicate is set to nil.
+    HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:quantityType
+                                                           predicate:nil
+                                                               limit:1
+                                                     sortDescriptors:@[timeSortDescriptor]
+                                                      resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
+  if (!results) {
+      if (completion) {
+          completion(nil, error);
+      }
+      
+      return;
+  }
+                                                          
+  if (completion) {
+      
+      // If quantity isn't in the database, return nil in the completion block.
+      HKQuantitySample *quantitySample = results.firstObject;
+      HKQuantity *quantity = quantitySample.quantity;
+      
+      completion(quantity, error);
+      
+  }
+  }];
+    [self.healthStore executeQuery: query];
+}
+
 
 -(void)saveHKSample:(float)weight
              heightSample:(float)height withCompletion: (void (^)(BOOL result))completionHandler{

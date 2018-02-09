@@ -7,12 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <HealthKit/HealthKit.h>
 
 @interface HKHealthKitManager : NSObject
 
 + (HKHealthKitManager *)sharedManager;
 
+- (NSSet *)dataTypesToWrite;
+- (NSSet *)dataTypesToRead;
 - (void)requestAuthorization;
+
+- (void)mostRecentQuantitySampleOfType:(HKQuantityType *)quantityType
+predicate:(NSPredicate *)predicate
+completion:(void (^)(HKQuantity *, NSError *))completion;
 
 - (NSDate *)readBirthDate;
 - (void)saveHKSample: (float)weight
