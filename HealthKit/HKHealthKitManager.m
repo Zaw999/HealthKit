@@ -31,27 +31,27 @@
 - (NSSet *)dataTypesToRead {
     
     HKQuantityType *dobType = [HKObjectType quantityTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth];
-    
+    HKQuantityType *heightType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
     HKQuantityType *caffeineType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine];
     HKQuantityType *calciumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCalcium];
     HKQuantityType *carboHydratesType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCarbohydrates];
     HKQuantityType *chlorideType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChloride];
     HKQuantityType *chromiumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChromium];
     
-    return [NSSet setWithObjects: dobType, caffeineType, calciumType, carboHydratesType, chlorideType, chromiumType, nil];
+    return [NSSet setWithObjects: dobType,heightType, caffeineType, calciumType, carboHydratesType, chlorideType, chromiumType, nil];
 }
 
 - (NSSet *)dataTypesToWrite {
     
     HKQuantityType *dobType = [HKObjectType quantityTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth];
-    
+    HKQuantityType *heightType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
     HKQuantityType *caffeineType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine];
     HKQuantityType *calciumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCalcium];
     HKQuantityType *carboHydratesType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCarbohydrates];
     HKQuantityType *chlorideType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChloride];
     HKQuantityType *chromiumType = [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChromium];
     
-    return [NSSet setWithObjects: caffeineType, calciumType, carboHydratesType, chlorideType, chromiumType, nil];
+    return [NSSet setWithObjects: caffeineType, heightType, calciumType, carboHydratesType, chlorideType, chromiumType, nil];
 }
 
 - (void)requestAuthorization {
@@ -61,8 +61,11 @@
 //        // return;
 //    }
     
+    // NSSet *read = [self dataTypesToRead];
+    NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth], [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine]];
+    
     [self.healthStore requestAuthorizationToShareTypes: [self dataTypesToWrite]
-                                             readTypes: [self dataTypesToRead]
+                                             readTypes: [NSSet setWithArray:readTypes]
                                             completion:^(BOOL success, NSError *error) {
         if (!success) {
             NSLog(@"You didn't allow HealthKit to access these read/write data types. In your app, try to handle this error gracefully when a user decides not to provide access. The error was: %@. If you're using a simulator, try it on a device.", error);
@@ -113,13 +116,16 @@
                              predicate:(NSPredicate *)predicate
                             completion:(void (^)(HKQuantity *, NSError *))completion {
     
-    NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate ascending:NO];
+    NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate ascending: YES];
+    
+    NSString *endKey = HKSampleSortIdentifierEndDate;
+    NSSortDescriptor *endDate = [NSSortDescriptor sortDescriptorWithKey:endKey ascending:NO];
     
     // Since we are interested in retrieving the user's latest sample, we sort the samples in descending order, and set the limit to 1. We are not filtering the data, and so the predicate is set to nil.
     HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:quantityType
                                                            predicate:nil
-                                                               limit:1
-                                                     sortDescriptors:@[timeSortDescriptor]
+                                                               limit:HKObjectQueryNoLimit
+                                                     sortDescriptors:@[endDate]
                                                       resultsHandler:^(HKSampleQuery *query, NSArray *results, NSError *error) {
   if (!results) {
       if (completion) {

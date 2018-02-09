@@ -31,10 +31,20 @@
     
     
 }
+- (IBAction)requestAuthorization:(UISwitch *)sender {
+    
+    if(sender.isOn) {
+        [[HKHealthKitManager sharedManager] requestAuthorization];
+    } else {
+        
+    }
+    
+}
 
 -(void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
+    [self updateUsersHeightLabel];
     [self updateCaffeineType];
 }
 
@@ -53,17 +63,59 @@
         });
         
     } else {
-        
+        NSLog(@"CaffeineType : %@", mostRecentQuantity);
+        //HKUnit *caffeintUnit = [HKUnit unitFromString: @"mg/dl"];
+        // HKQuantity *quantity = [mostRecentQuantity doubleValueForUnit: caffeint];
+        HKUnit *caffeintUnit = [HKUnit gramUnit];
+        double caffeine = [mostRecentQuantity doubleValueForUnit: caffeintUnit];
+        double meterValue = caffeine * 1000;
+        NSLog(@"CaffeineType : %d", meterValue);
         // HKUnit *caffeintUnit = [HKUnit unit]
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"CaffeineType : %@", mostRecentQuantity);
-            // _txtCaffeine.text = [mostRecentQuantity doubleValueForUnit: ];
+            _txtCaffeine.text = [NSNumberFormatter localizedStringFromNumber:@(meterValue) numberStyle:NSNumberFormatterNoStyle];;
         });
         
     }
                                                                 
     }];
     
+}
+
+- (void)updateUsersHeightLabel {
+    // Fetch user's default height unit in inches.
+    NSLengthFormatter *lengthFormatter = [[NSLengthFormatter alloc] init];
+    lengthFormatter.unitStyle = NSFormattingUnitStyleLong;
+    
+    NSLengthFormatterUnit heightFormatterUnit = NSLengthFormatterUnitInch;
+    NSString *heightUnitString = [lengthFormatter unitStringFromValue:10 unit:heightFormatterUnit];
+    NSString *localizedHeightUnitDescriptionFormat = NSLocalizedString(@"Height (%@)", nil);
+    
+    _txtCalcium.text = [NSString stringWithFormat:localizedHeightUnitDescriptionFormat, heightUnitString];
+    
+    HKQuantityType *heightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
+    
+    // Query to get the user's latest height, if it exists.
+    [[HKHealthKitManager sharedManager] mostRecentQuantitySampleOfType: heightType
+                                                             predicate: nil
+                                                            completion: ^(HKQuantity *mostRecentQuantity, NSError *error) {
+   if (!mostRecentQuantity) {
+       NSLog(@"Either an error occured fetching the user's height information or none has been stored yet. In your app, try to handle this gracefully.");
+       
+       dispatch_async(dispatch_get_main_queue(), ^{
+           _txtCalcium.text = NSLocalizedString(@"Not available", nil);
+       });
+   }
+   else {
+       // Determine the height in the required unit.
+       HKUnit *heightUnit = [HKUnit inchUnit];
+       double usersHeight = [mostRecentQuantity doubleValueForUnit:heightUnit];
+       
+       // Update the user interface.
+       dispatch_async(dispatch_get_main_queue(), ^{
+           _txtCalcium.text = [NSNumberFormatter localizedStringFromNumber:@(usersHeight) numberStyle:NSNumberFormatterNoStyle];
+       });
+   }
+   }];
 }
 
 - (IBAction)SaveToHealthKit:(id)sender {
