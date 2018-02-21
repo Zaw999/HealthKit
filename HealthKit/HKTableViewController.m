@@ -27,10 +27,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _txtCaffeine.delegate = self;
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
     
-    
+    [self.view addGestureRecognizer:tap];
 }
+
+-(void)dismissKeyboard
+{
+    [_txtCaffeine resignFirstResponder];
+}
+
 - (IBAction)requestAuthorization:(UISwitch *)sender {
     
     if(sender.isOn) {
@@ -42,10 +50,26 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear: animated];
     
-    [self updateUsersHeightLabel];
     [self updateCaffeineType];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    
+    textField.text = nil;
+    
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    
+    
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 
 - (void)updateCaffeineType {
@@ -64,15 +88,12 @@
         
     } else {
         NSLog(@"CaffeineType : %@", mostRecentQuantity);
-        //HKUnit *caffeintUnit = [HKUnit unitFromString: @"mg/dl"];
-        // HKQuantity *quantity = [mostRecentQuantity doubleValueForUnit: caffeint];
         HKUnit *caffeintUnit = [HKUnit gramUnit];
         double caffeine = [mostRecentQuantity doubleValueForUnit: caffeintUnit];
-        double meterValue = caffeine * 1000;
-        NSLog(@"CaffeineType : %d", meterValue);
-        // HKUnit *caffeintUnit = [HKUnit unit]
+        double mgValue = caffeine * 1000;
+        NSLog(@"CaffeineType : %f", mgValue);
         dispatch_async(dispatch_get_main_queue(), ^{
-            _txtCaffeine.text = [NSNumberFormatter localizedStringFromNumber:@(meterValue) numberStyle:NSNumberFormatterNoStyle];;
+            _txtCaffeine.text = [NSNumberFormatter localizedStringFromNumber:@(mgValue) numberStyle:NSNumberFormatterNoStyle];;
         });
         
     }
@@ -81,7 +102,33 @@
     
 }
 
+- (IBAction)SaveToHealthKit:(id)sender {
+    
+    NSLog(@"SaveToHealthKit");
+    
+    [[HKHealthKitManager sharedManager] saveNutrition: [_txtCaffeine.text integerValue]
+                                       withCompletion: ^(BOOL result){
+        if (result) {
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:NULL
+                                                                           message:@"Saved to HealthKit"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction * action) {}];
+            
+            [alert addAction:defaultAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
+    
+    
+
+    
+}
+
 - (void)updateUsersHeightLabel {
+    /*
     // Fetch user's default height unit in inches.
     NSLengthFormatter *lengthFormatter = [[NSLengthFormatter alloc] init];
     lengthFormatter.unitStyle = NSFormattingUnitStyleLong;
@@ -116,10 +163,10 @@
        });
    }
    }];
+     */
 }
 
-- (IBAction)SaveToHealthKit:(id)sender {
-}
+
 
 
 @end

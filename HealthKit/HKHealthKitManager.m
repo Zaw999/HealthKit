@@ -148,7 +148,7 @@
     [self.healthStore executeQuery: query];
 }
 
-
+#pragma mark - Save To HealthKit.
 -(void)saveHKSample:(float)weight
              heightSample:(float)height withCompletion: (void (^)(BOOL result))completionHandler{
     
@@ -178,6 +178,37 @@
             completionHandler(success);
          }
          */
+    }];
+    
+    
+    
+}
+
+-(void)saveNutrition: (float)caffeine
+      withCompletion: (void (^)(BOOL result))completionHandler{
+    
+    HKUnit *caffeineUnit = [HKUnit gramUnitWithMetricPrefix: HKMetricPrefixMilli];
+    HKQuantity *caffeintQuantity = [HKQuantity quantityWithUnit:caffeineUnit doubleValue:caffeine];
+    
+    HKQuantityType *caffeineType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryCaffeine];
+    NSDate *now = [NSDate date];
+    
+    /*
+    // Each quantity consists of a value and a unit.
+    HKUnit *kilogramUnit = [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixKilo];
+    HKQuantity *weightQuantity = [HKQuantity quantityWithUnit:kilogramUnit doubleValue: weight];
+    
+    HKQuantityType *weightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
+    NSDate *now = [NSDate date];
+    
+    // For every sample, we need a sample type, quantity and a date.
+    HKQuantitySample *weightSample = [HKQuantitySample quantitySampleWithType:weightType quantity:weightQuantity startDate:now endDate:now];
+    */
+    HKQuantitySample *caffeineSample = [HKQuantitySample quantitySampleWithType:caffeineType quantity:caffeintQuantity startDate:now endDate:now];
+    
+    [self.healthStore saveObjects: @[caffeineSample] withCompletion:^(BOOL success, NSError *error) {
+        NSLog(@"result : %d", success);
+        completionHandler(success);
     }];
     
     

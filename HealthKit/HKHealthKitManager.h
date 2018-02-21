@@ -26,4 +26,7 @@ completion:(void (^)(HKQuantity *, NSError *))completion;
         heightSample: (float)height
       withCompletion: (void (^)(BOOL success))completionHandler;
 
+-(void)saveNutrition: (float)weight
+      withCompletion: (void (^)(BOOL result))completionHandler;
+
 @end
