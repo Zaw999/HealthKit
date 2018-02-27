@@ -203,11 +203,11 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="piG-9Z-EOb">
+                                                <textField opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="piG-9Z-EOb">
                                                     <rect key="frame" x="208" y="6" width="152" height="37.5"/>
                                                     <color key="textColor" red="1" green="0.23751410510000001" blue="0.45685700229999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -236,19 +236,19 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c0s-9u-RpE">
-                                                    <rect key="frame" x="269" y="6" width="91" height="37.5"/>
+                                                <textField opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="c0s-9u-RpE">
+                                                    <rect key="frame" x="207" y="6" width="152" height="37.5"/>
                                                     <color key="textColor" red="1" green="0.23751410510000001" blue="0.45685700229999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="c0s-9u-RpE" secondAttribute="bottom" constant="6" id="5AM-n2-seS"/>
-                                                <constraint firstItem="c0s-9u-RpE" firstAttribute="leading" secondItem="6fO-3e-Cu9" secondAttribute="trailing" constant="130" id="7vS-MP-SkX"/>
+                                                <constraint firstItem="c0s-9u-RpE" firstAttribute="leading" secondItem="6fO-3e-Cu9" secondAttribute="trailing" constant="68" id="7vS-MP-SkX"/>
                                                 <constraint firstAttribute="bottom" secondItem="c0s-9u-RpE" secondAttribute="bottom" constant="6" id="97G-j0-G37"/>
                                                 <constraint firstItem="c0s-9u-RpE" firstAttribute="top" secondItem="yzS-8l-zz0" secondAttribute="top" constant="6" id="AX1-7h-j2F"/>
-                                                <constraint firstAttribute="trailing" secondItem="c0s-9u-RpE" secondAttribute="trailing" constant="15" id="G3G-zW-FmA"/>
+                                                <constraint firstAttribute="trailing" secondItem="c0s-9u-RpE" secondAttribute="trailing" constant="16" id="G3G-zW-FmA"/>
                                                 <constraint firstItem="6fO-3e-Cu9" firstAttribute="top" secondItem="yzS-8l-zz0" secondAttribute="topMargin" id="LyV-w0-bky"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="6fO-3e-Cu9" secondAttribute="bottom" id="U9Z-8w-aTL"/>
                                                 <constraint firstItem="c0s-9u-RpE" firstAttribute="top" secondItem="yzS-8l-zz0" secondAttribute="top" constant="6" id="cZW-iO-Cxi"/>
@@ -269,11 +269,11 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FPc-Wc-Vao">
+                                                <textField opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FPc-Wc-Vao">
                                                     <rect key="frame" x="152" y="6" width="208" height="37.5"/>
                                                     <color key="textColor" red="1" green="0.23751410510000001" blue="0.45685700229999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -302,19 +302,19 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0TQ-T8-nA3">
-                                                    <rect key="frame" x="225.5" y="6" width="134.5" height="37.5"/>
+                                                <textField opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0TQ-T8-nA3">
+                                                    <rect key="frame" x="207" y="6" width="152" height="37.5"/>
                                                     <color key="textColor" red="1" green="0.23751410510000001" blue="0.45685700229999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                                 </textField>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="0TQ-T8-nA3" secondAttribute="bottom" constant="6" id="C2p-DD-fiX"/>
-                                                <constraint firstAttribute="trailing" secondItem="0TQ-T8-nA3" secondAttribute="trailing" constant="15" id="Csx-09-JBu"/>
+                                                <constraint firstAttribute="trailing" secondItem="0TQ-T8-nA3" secondAttribute="trailing" constant="16" id="Csx-09-JBu"/>
                                                 <constraint firstItem="9Aw-Uy-XJ4" firstAttribute="top" secondItem="GjG-ps-9Nu" secondAttribute="topMargin" id="Kpd-tC-PaT"/>
                                                 <constraint firstAttribute="bottom" secondItem="0TQ-T8-nA3" secondAttribute="bottom" constant="6" id="MIJ-a3-UhU"/>
-                                                <constraint firstItem="0TQ-T8-nA3" firstAttribute="leading" secondItem="9Aw-Uy-XJ4" secondAttribute="trailing" constant="130" id="Nzs-aa-6kB"/>
+                                                <constraint firstItem="0TQ-T8-nA3" firstAttribute="leading" secondItem="9Aw-Uy-XJ4" secondAttribute="trailing" constant="111.5" id="Nzs-aa-6kB"/>
                                                 <constraint firstItem="0TQ-T8-nA3" firstAttribute="top" secondItem="GjG-ps-9Nu" secondAttribute="top" constant="6" id="VmD-5N-PJv"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="9Aw-Uy-XJ4" secondAttribute="bottom" id="WYc-9f-RhS"/>
                                                 <constraint firstItem="0TQ-T8-nA3" firstAttribute="top" secondItem="GjG-ps-9Nu" secondAttribute="top" constant="6" id="dvH-DG-TEt"/>
@@ -333,6 +333,10 @@
                     <navigationItem key="navigationItem" id="R5U-VT-MWF"/>
                     <connections>
                         <outlet property="txtCaffeine" destination="mGo-kc-24h" id="NGh-rb-7rH"/>
+                        <outlet property="txtCalcium" destination="piG-9Z-EOb" id="sid-xH-4Ik"/>
+                        <outlet property="txtCarbonHydrates" destination="c0s-9u-RpE" id="Vid-Ba-V1c"/>
+                        <outlet property="txtChloride" destination="FPc-Wc-Vao" id="4nc-Ch-ZNv"/>
+                        <outlet property="txtChromium" destination="0TQ-T8-nA3" id="K6H-zq-QTc"/>
                         <outlet property="txtDate" destination="Qfr-QU-lg9" id="RtY-Ro-B8d"/>
                         <outlet property="txtTime" destination="eFG-oy-orz" id="GHY-yp-aZN"/>
                     </connections>

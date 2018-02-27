@@ -26,7 +26,11 @@ completion:(void (^)(HKQuantity *, NSError *))completion;
         heightSample: (float)height
       withCompletion: (void (^)(BOOL success))completionHandler;
 
--(void)saveNutrition: (float)weight
+-(void)saveNutrition: (float)caffeine
+             calcium: (float)calcium
+      carbonHydrates: (float)carbonHydrates
+            chloride: (float)chloride
+            chromium: (float)chromium
       withCompletion: (void (^)(BOOL result))completionHandler;
 
 @end

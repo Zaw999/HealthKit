@@ -62,7 +62,7 @@
 //    }
     
     // NSSet *read = [self dataTypesToRead];
-    NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth], [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine]];
+    NSArray *readTypes = @[[HKObjectType characteristicTypeForIdentifier: HKCharacteristicTypeIdentifierDateOfBirth], [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCalcium], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCarbohydrates], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChloride], [HKObjectType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChromium]];
     
     [self.healthStore requestAuthorizationToShareTypes: [self dataTypesToWrite]
                                              readTypes: [NSSet setWithArray:readTypes]
@@ -116,7 +116,7 @@
                              predicate:(NSPredicate *)predicate
                             completion:(void (^)(HKQuantity *, NSError *))completion {
     
-    NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate ascending: YES];
+    // NSSortDescriptor *timeSortDescriptor = [[NSSortDescriptor alloc] initWithKey:HKSampleSortIdentifierEndDate ascending: YES];
     
     NSString *endKey = HKSampleSortIdentifierEndDate;
     NSSortDescriptor *endDate = [NSSortDescriptor sortDescriptorWithKey:endKey ascending:NO];
@@ -180,33 +180,43 @@
          */
     }];
     
-    
-    
 }
 
 -(void)saveNutrition: (float)caffeine
+             calcium: (float)calcium
+             carbonHydrates: (float)carbonHydrates
+             chloride: (float)chloride
+             chromium: (float)chromium
       withCompletion: (void (^)(BOOL result))completionHandler{
     
-    HKUnit *caffeineUnit = [HKUnit gramUnitWithMetricPrefix: HKMetricPrefixMilli];
-    HKQuantity *caffeintQuantity = [HKQuantity quantityWithUnit:caffeineUnit doubleValue:caffeine];
-    
-    HKQuantityType *caffeineType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryCaffeine];
     NSDate *now = [NSDate date];
     
-    /*
-    // Each quantity consists of a value and a unit.
-    HKUnit *kilogramUnit = [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixKilo];
-    HKQuantity *weightQuantity = [HKQuantity quantityWithUnit:kilogramUnit doubleValue: weight];
+    HKUnit *caffeineUnit        = [HKUnit gramUnitWithMetricPrefix: HKMetricPrefixMilli];
+    HKUnit *calciumUnit         = [HKUnit gramUnitWithMetricPrefix: HKMetricPrefixMilli];
+    HKUnit *carbonHydratesUnit  = [HKUnit gramUnit];
+    HKUnit *chlorideUnit        = [HKUnit gramUnitWithMetricPrefix: HKMetricPrefixMilli];
+    HKUnit *chromiumUnit        = [HKUnit gramUnitWithMetricPrefix: HKMetricPrefixMicro];
     
-    HKQuantityType *weightType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
-    NSDate *now = [NSDate date];
+    HKQuantity *caffeineQuantity        = [HKQuantity quantityWithUnit:caffeineUnit doubleValue:caffeine];
+    HKQuantity *calciumQuantity         = [HKQuantity quantityWithUnit:calciumUnit doubleValue:calcium];
+    HKQuantity *carbonHydratesQuantity  = [HKQuantity quantityWithUnit:carbonHydratesUnit doubleValue:carbonHydrates];
+    HKQuantity *chlorideQuantity        = [HKQuantity quantityWithUnit:chlorideUnit doubleValue:chloride];
+    HKQuantity *chromiumQuantity        = [HKQuantity quantityWithUnit:chromiumUnit doubleValue:chromium];
     
-    // For every sample, we need a sample type, quantity and a date.
-    HKQuantitySample *weightSample = [HKQuantitySample quantitySampleWithType:weightType quantity:weightQuantity startDate:now endDate:now];
-    */
-    HKQuantitySample *caffeineSample = [HKQuantitySample quantitySampleWithType:caffeineType quantity:caffeintQuantity startDate:now endDate:now];
+    HKQuantityType *caffeineType         = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryCaffeine];
+    HKQuantityType *calciumType          = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryCalcium];
+    HKQuantityType *carbonHydratesType   = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryCarbohydrates];
+    HKQuantityType *chlorideType         = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryChloride];
+    HKQuantityType *chromiumType         = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryChromium];
     
-    [self.healthStore saveObjects: @[caffeineSample] withCompletion:^(BOOL success, NSError *error) {
+    
+    HKQuantitySample *caffeineSample         = [HKQuantitySample quantitySampleWithType:caffeineType quantity:caffeineQuantity startDate:now endDate:now];
+    HKQuantitySample *calciumSample          = [HKQuantitySample quantitySampleWithType:calciumType quantity:calciumQuantity startDate:now endDate:now];
+    HKQuantitySample *carbonHydratesSample   = [HKQuantitySample quantitySampleWithType:carbonHydratesType quantity:carbonHydratesQuantity startDate:now endDate:now];
+    HKQuantitySample *chlorideSample         = [HKQuantitySample quantitySampleWithType:chlorideType quantity:chlorideQuantity startDate:now endDate:now];
+    HKQuantitySample *chromiumSample         = [HKQuantitySample quantitySampleWithType:chromiumType quantity:chromiumQuantity startDate:now endDate:now];
+    
+    [self.healthStore saveObjects: @[caffeineSample, calciumSample, carbonHydratesSample, chlorideSample, chromiumSample] withCompletion:^(BOOL success, NSError *error) {
         NSLog(@"result : %d", success);
         completionHandler(success);
     }];

@@ -11,6 +11,10 @@
 #import "HKHealthKitManager.h"
 
 @interface HKTableViewController ()
+{
+    NSMutableArray *healthKitArray;
+}
+
 
 @property (weak, nonatomic) IBOutlet UILabel *txtDate;
 @property (weak, nonatomic) IBOutlet UILabel *txtTime;
@@ -25,9 +29,29 @@
 
 @implementation HKTableViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _txtCaffeine.delegate = self;
+    
+    healthKitArray = [NSMutableArray array];
+    
+    _txtCaffeine.delegate        = self;
+    _txtCalcium.delegate         = self;
+    _txtCarbonHydrates.delegate  = self;
+    _txtChloride.delegate        = self;
+    _txtChromium.delegate        = self;
+    
+    NSDictionary *caffeineType = @{@"HKQuantityType": [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine], @"TextField": _txtCaffeine};
+    
+    NSDictionary *calciumType = @{@"HKQuantityType": [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCalcium], @"TextField": _txtCalcium};
+    
+    NSDictionary *carbohydratesType = @{@"HKQuantityType": [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCarbohydrates], @"TextField": _txtCarbonHydrates};
+    
+    NSDictionary *chlorideType = @{@"HKQuantityType": [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChloride], @"TextField": _txtChloride};
+    
+    NSDictionary *chromiumType = @{@"HKQuantityType": [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryChromium], @"TextField": _txtChromium};
+
+    healthKitArray = [@[caffeineType, calciumType, carbohydratesType, chlorideType, chromiumType] mutableCopy];
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
     
@@ -44,7 +68,7 @@
     if(sender.isOn) {
         [[HKHealthKitManager sharedManager] requestAuthorization];
     } else {
-        
+        //
     }
     
 }
@@ -53,18 +77,16 @@
     
     [super viewWillAppear: animated];
     
-    [self updateCaffeineType];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (int i = 0; i < [healthKitArray count]; i++) {
+            [self updateHKQuantityType: [healthKitArray objectAtIndex:i][@"HKQuantityType"] showResult: [healthKitArray objectAtIndex:i][@"TextField"]];
+        }
+    });
+    
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    
     textField.text = nil;
-    
-}
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-    
-    
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -72,34 +94,39 @@
     return YES;
 }
 
-- (void)updateCaffeineType {
+- (void)updateHKQuantityType:(HKQuantityType *)quantityType
+                  showResult:(UITextField *)showResult {
     
-    HKQuantityType *caffeineType = [HKQuantityType quantityTypeForIdentifier: HKQuantityTypeIdentifierDietaryCaffeine];
-    
-    [[HKHealthKitManager sharedManager] mostRecentQuantitySampleOfType: caffeineType
+    [[HKHealthKitManager sharedManager] mostRecentQuantitySampleOfType: quantityType
                                                              predicate: nil
                                                             completion: ^(HKQuantity *mostRecentQuantity, NSError *error) {
                                                                 
     if (!mostRecentQuantity) {
-        
         dispatch_async(dispatch_get_main_queue(), ^{
-            _txtCaffeine.text = @"Not Available";
+            showResult.text = @"-";
         });
         
     } else {
-        NSLog(@"CaffeineType : %@", mostRecentQuantity);
-        HKUnit *caffeintUnit = [HKUnit gramUnit];
-        double caffeine = [mostRecentQuantity doubleValueForUnit: caffeintUnit];
-        double mgValue = caffeine * 1000;
-        NSLog(@"CaffeineType : %f", mgValue);
+        double caffeine = 0.0;
+        
+        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCaffeine] ||
+            [quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCalcium]  ||
+            [quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryChloride]) {
+            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixMilli]];
+        }
+        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCarbohydrates]) {
+            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnit]];
+        }
+        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryChromium]) {
+            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixMicro]];
+        }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
-            _txtCaffeine.text = [NSNumberFormatter localizedStringFromNumber:@(mgValue) numberStyle:NSNumberFormatterNoStyle];;
+            showResult.text = [NSNumberFormatter localizedStringFromNumber:@(caffeine) numberStyle:NSNumberFormatterNoStyle];;
         });
         
     }
-                                                                
     }];
-    
 }
 
 - (IBAction)SaveToHealthKit:(id)sender {
@@ -107,11 +134,15 @@
     NSLog(@"SaveToHealthKit");
     
     [[HKHealthKitManager sharedManager] saveNutrition: [_txtCaffeine.text integerValue]
+                                              calcium: [_txtCalcium.text integerValue]
+                                       carbonHydrates: [_txtCarbonHydrates.text integerValue]
+                                             chloride: [_txtChloride.text integerValue]
+                                             chromium: [_txtChromium.text integerValue]
                                        withCompletion: ^(BOOL result){
         if (result) {
             
-            UIAlertController* alert = [UIAlertController alertControllerWithTitle:NULL
-                                                                           message:@"Saved to HealthKit"
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Success"
+                                                                           message:@"Saved to HealthKit!"
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
@@ -121,10 +152,6 @@
             [self presentViewController:alert animated:YES completion:nil];
         }
     }];
-    
-    
-
-    
 }
 
 - (void)updateUsersHeightLabel {
