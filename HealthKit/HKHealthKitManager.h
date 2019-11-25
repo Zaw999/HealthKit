@@ -13,13 +13,14 @@
 
 + (HKHealthKitManager *)sharedManager;
 
-- (NSSet *)dataTypesToWrite;
-- (NSSet *)dataTypesToRead;
+//- (NSSet *)dataTypesToWrite;
+- (NSSet *)dataTypesToReadAndWrite;
 - (void)requestAuthorization;
 
 - (void)mostRecentQuantitySampleOfType:(HKQuantityType *)quantityType
 predicate:(NSPredicate *)predicate
 completion:(void (^)(HKQuantity *, NSError *))completion;
+- (void)mostRecentQuantitySampleOfTypeStepCount :(void (^)(NSMutableArray *))completion ;
 
 - (NSDate *)readBirthDate;
 - (void)saveHKSample: (float)weight

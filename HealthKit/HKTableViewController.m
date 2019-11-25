@@ -64,25 +64,23 @@
 }
 
 - (IBAction)requestAuthorization:(UISwitch *)sender {
-    
+
     if(sender.isOn) {
         [[HKHealthKitManager sharedManager] requestAuthorization];
-    } else {
-        //
     }
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear: animated];
     
+    //[[HKHealthKitManager sharedManager] mostRecentQuantitySampleOfTypeStepCount];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         for (int i = 0; i < [healthKitArray count]; i++) {
             [self updateHKQuantityType: [healthKitArray objectAtIndex:i][@"HKQuantityType"] showResult: [healthKitArray objectAtIndex:i][@"TextField"]];
         }
     });
-    
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
@@ -101,38 +99,39 @@
                                                              predicate: nil
                                                             completion: ^(HKQuantity *mostRecentQuantity, NSError *error) {
                                                                 
-    if (!mostRecentQuantity) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            showResult.text = @"-";
-        });
-        
-    } else {
-        double caffeine = 0.0;
-        
-        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCaffeine] ||
-            [quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCalcium]  ||
-            [quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryChloride]) {
-            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixMilli]];
-        }
-        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCarbohydrates]) {
-            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnit]];
-        }
-        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryChromium]) {
-            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixMicro]];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            showResult.text = [NSNumberFormatter localizedStringFromNumber:@(caffeine) numberStyle:NSNumberFormatterNoStyle];;
-        });
-        
-    }
+    NSLog(@"error : %@", error.localizedDescription);
+//    if (!mostRecentQuantity) {
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            showResult.text = @"-";
+//        });
+//
+//    } else {
+//        double caffeine = 0.0;
+//
+//        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCaffeine] ||
+//            [quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCalcium]  ||
+//            [quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryChloride]) {
+//            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixMilli]];
+//        }
+//        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryCarbohydrates]) {
+//            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnit]];
+//        }
+//        if ([quantityType.identifier isEqualToString: HKQuantityTypeIdentifierDietaryChromium]) {
+//            caffeine = [mostRecentQuantity doubleValueForUnit: [HKUnit gramUnitWithMetricPrefix:HKMetricPrefixMicro]];
+//        }
+//
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            showResult.text = [NSNumberFormatter localizedStringFromNumber:@(caffeine) numberStyle:NSNumberFormatterNoStyle];;
+//        });
+//
+//    }
     }];
 }
 
 - (IBAction)SaveToHealthKit:(id)sender {
     
+    return;
     NSLog(@"SaveToHealthKit");
-    
     [[HKHealthKitManager sharedManager] saveNutrition: [_txtCaffeine.text integerValue]
                                               calcium: [_txtCalcium.text integerValue]
                                        carbonHydrates: [_txtCarbonHydrates.text integerValue]

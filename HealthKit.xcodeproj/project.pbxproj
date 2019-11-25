@@ -16,6 +16,7 @@
 		9A2D460D2025CF5900FB610A /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2D460C2025CF5900FB610A /* HealthKit.framework */; };
 		9A2D46102025D12000FB610A /* HKHealthKitManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A2D460F2025D12000FB610A /* HKHealthKitManager.m */; };
 		9A32BAE2202C37CC005E06BC /* HKTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A32BAE1202C37CC005E06BC /* HKTableViewController.m */; };
+		9A9A5266210FFD7500066E52 /* StepCountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9A9A5265210FFD7500066E52 /* StepCountViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		9A2D460F2025D12000FB610A /* HKHealthKitManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HKHealthKitManager.m; sourceTree = "<group>"; };
 		9A32BAE0202C37CC005E06BC /* HKTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HKTableViewController.h; sourceTree = "<group>"; };
 		9A32BAE1202C37CC005E06BC /* HKTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HKTableViewController.m; sourceTree = "<group>"; };
+		9A9A5264210FFD7500066E52 /* StepCountViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StepCountViewController.h; sourceTree = "<group>"; };
+		9A9A5265210FFD7500066E52 /* StepCountViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StepCountViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +86,8 @@
 				9A2D460F2025D12000FB610A /* HKHealthKitManager.m */,
 				9A32BAE0202C37CC005E06BC /* HKTableViewController.h */,
 				9A32BAE1202C37CC005E06BC /* HKTableViewController.m */,
+				9A9A5264210FFD7500066E52 /* StepCountViewController.h */,
+				9A9A5265210FFD7500066E52 /* StepCountViewController.m */,
 			);
 			path = HealthKit;
 			sourceTree = "<group>";
@@ -175,6 +180,7 @@
 				9A2D46042025CF4F00FB610A /* main.m in Sources */,
 				9A2D45F62025CF4F00FB610A /* AppDelegate.m in Sources */,
 				9A2D46102025D12000FB610A /* HKHealthKitManager.m in Sources */,
+				9A9A5266210FFD7500066E52 /* StepCountViewController.m in Sources */,
 				9A32BAE2202C37CC005E06BC /* HKTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -313,7 +319,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NA5BTE5432;
 				INFOPLIST_FILE = HealthKit/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zyn.HealthKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -329,7 +335,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = NA5BTE5432;
 				INFOPLIST_FILE = HealthKit/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zyn.HealthKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
